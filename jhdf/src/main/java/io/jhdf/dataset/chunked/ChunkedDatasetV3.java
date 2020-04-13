@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -70,7 +71,9 @@ public class ChunkedDatasetV3 extends ChunkedDatasetBase {
             logger.debug("Creating chunk lookup for '{}'", getPath());
 
             if(layoutMessage.getBTreeAddress() == Constants.UNDEFINED_ADDRESS) {
-                throw new HdfException("No storage allocated for '" + getPath() + "'");
+                // No storage is allocated
+                logger.debug("No storage allocated for '{}'", getPath());
+                return Collections.emptyMap();
             }
 
             final BTreeV1Data bTree = BTreeV1.createDataBTree(hdfFc, layoutMessage.getBTreeAddress(), getDimensions().length);
