@@ -296,4 +296,17 @@ public abstract class ChunkedDatasetBase extends DatasetBase implements ChunkedD
 
     protected abstract Map<ChunkOffset, Chunk> getChunkLookup();
 
+    @Override
+    public long getDiskSize() {
+        return getChunkLookup().size() * getChunkSizeInBytes();
+    }
+
+    /**
+     * Gets the first chunk and returns its size in bytes which will be the same for all chunks.
+     *
+     * @return the size of a chunk in bytes
+     */
+    int getChunkSizeInBytes() {
+        return Arrays.stream(getChunkDimensions()).reduce(1, Math::multiplyExact) * getDataType().getSize();
+    }
 }

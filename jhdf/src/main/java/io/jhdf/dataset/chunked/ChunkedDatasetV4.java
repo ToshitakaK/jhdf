@@ -26,7 +26,6 @@ import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
@@ -69,7 +68,7 @@ public class ChunkedDatasetV4 extends ChunkedDatasetBase {
         protected Map<ChunkOffset, Chunk> initialize() {
             logger.debug("Creating chunk lookup for '{}'", getPath());
 
-            final DatasetInfo datasetInfo = new DatasetInfo(getChunkSizeInBytes(), getDimensions(), getChunkDimensions());
+            final DatasetInfo datasetInfo = new DatasetInfo(ChunkedDatasetV4.this.getChunkSizeInBytes(), getDimensions(), getChunkDimensions());
             final ChunkIndex chunkIndex;
             switch (layoutMessage.getIndexingType()) {
                 case 1: // Single chunk
@@ -99,10 +98,6 @@ public class ChunkedDatasetV4 extends ChunkedDatasetBase {
             return allChunks.stream().
                     collect(toMap(chunk -> new ChunkOffset(chunk.getChunkOffset()) // keys
                             , Function.identity())); // values
-        }
-
-        private int getChunkSizeInBytes() {
-            return Arrays.stream(getChunkDimensions()).reduce(1, Math::multiplyExact) * getDataType().getSize();
         }
 
     }
